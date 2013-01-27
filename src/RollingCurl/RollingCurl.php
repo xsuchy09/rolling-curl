@@ -39,7 +39,7 @@ class RollingCurl
     private $timeout = 10;
 
     /**
-     * @var Callable
+     * @var \Closure
      *
      * Callback function to be applied to each result.
      */
@@ -286,17 +286,17 @@ class RollingCurl
      * $request is the original request
      * $rolling_curl is the current instance of the RollingCurl (useful if you want to requeue a URL)
      *
-     * @param Callable $callback
+     * @param \Closure $callback
      * @return RollingCurl
      */
-    public function setCallback(Callable $callback)
+    public function setCallback(\Closure $callback)
     {
         $this->callback = $callback;
         return $this;
     }
 
     /**
-     * @return Callable
+     * @return \Closure
      */
     public function getCallback()
     {
