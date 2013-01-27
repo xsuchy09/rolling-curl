@@ -13,18 +13,18 @@ RollingCurl is a more efficient implementation of curl_multi().
 
 curl_multi is a great way to process multiple HTTP requests in parallel in PHP but suffers from a few faults:
 
-  # The documentation for curl_multi is very obtuse and, as such, is easy to incorrectly or poorly implement
-  # Most curl_multi examples queue up all requests and execute them all at once
+ 1. The documentation for curl_multi is very obtuse and, as such, is easy to incorrectly or poorly implement
+ 2. Most curl_multi examples queue up all requests and execute them all at once
 
 The second point is the most important one for two reasons:
 
- # If you have to wait on every single request to complete, your program is "blocked" by the longest running request.
- # More importantly, when you run a large number of cURL requests simultaneously you are, essentially, running a DOS attack. If you have to fetch hundreds or even thousands of URLs you're very likely to be blocked by automatic DOS systems. At best, you're not being a very respectful citizen of the internet.
+ 1. If you have to wait on every single request to complete, your program is "blocked" by the longest running request.
+ 2. More importantly, when you run a large number of cURL requests simultaneously you are, essentially, running a DOS attack. If you have to fetch hundreds or even thousands of URLs you're very likely to be blocked by automatic DOS systems. At best, you're not being a very respectful citizen of the internet.
 
 RollingCurl deals with both issues:
 
- # Requests are processed via a callback while cURL continues to fetch requests asynchronously (you may chose to skip the callback and instead do post processing)
- # RollingCurl will limit the maximum number of simultaneous requests
+ 1. Requests are processed via a callback while cURL continues to fetch requests asynchronously (you may chose to skip the callback and instead do post processing)
+ 2. RollingCurl will limit the maximum number of simultaneous requests
 
 ## Usage
 
@@ -54,7 +54,7 @@ $rollingCurl
 
 ### Fetch A Very Large Number Of Pages
 
-Let's scrap google for the first 500 results for "curl"
+Let's scrap google for the first 500 links & titles for "curl"
 
 ```php
 $rollingCurl = new \RollingCurl\RollingCurl();
@@ -105,7 +105,7 @@ $rollingCurl
     ->get('http://msn.com')
     ->get('http://reddit.com')
     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) {
-        echo "Fetch complete for (" . $request->getUrl() . ") $title " . PHP_EOL;
+        echo "Fetch complete for (" . $request->getUrl() . ")" . PHP_EOL;
     })
     ->setSimultaneousLimit(3)
     ->execute();
@@ -119,7 +119,7 @@ $rollingCurl = new \RollingCurl\RollingCurl();
 
 $sites = array(
     'http://yahoo.com' => array(
-//        CURLOPT_TIMEOUT => 15
+        CURLOPT_TIMEOUT => 15
     ),
     'http://google.com' => array(
         CURLOPT_TIMEOUT => 5
@@ -137,12 +137,10 @@ $sites = array(
 
 foreach ($sites as $url => $options) {
     $request = new \RollingCurl\Request($url);
-    $request->addOptions($options);
-    $rollingCurl->add($request);
+    $rollingCurl->add(
+        $request->addOptions($options)
+    );
 }
 
-$rollingCurl
-    ->setSimultaneousLimit(20)
-    ->execute()
-;
+$rollingCurl->execute();
 ```
