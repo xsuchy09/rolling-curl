@@ -144,3 +144,5 @@ foreach ($sites as $url => $options) {
 
 $rollingCurl->execute();
 ```
+
+More examples can be found in the examples/ directory.
