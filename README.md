@@ -21,7 +21,7 @@ The second point is the most important one for two reasons:
  1. If you have to wait on every single request to complete, your program is "blocked" by the longest running request.
  2. More importantly, when you run a large number of cURL requests simultaneously you are, essentially, running a DOS attack. If you have to fetch hundreds or even thousands of URLs you're very likely to be blocked by automatic DOS systems. At best, you're not being a very respectful citizen of the internet.
 
-RollingCurl deals with both issues by maintaining a maximum number of simultaneous requests and "rolling" new requests into the queue as existing requests complete. When requests complete, and while other requests are still running, Rolling Curl can run an anonymous function to process the fetched result. (You have the option to skip the function and instead process all requests once they are done, should you prefer.)
+RollingCurl deals with both issues by maintaining a maximum number of simultaneous requests and "rolling" new requests into the queue as existing requests complete. When requests complete, and while other requests are still running, RollingCurl can run an anonymous function to process the fetched result. (You have the option to skip the function and instead process all requests once they are done, should you prefer.)
 
 ## Usage
 
