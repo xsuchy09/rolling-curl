@@ -156,3 +156,7 @@ More examples can be found in the examples/ directory.
  - Better validation on setters
 
 Feel free to fork and pull request to help out with the above. :D
+
+## Similar Projects
+
+ - http://code.google.com/p/multirequest/
