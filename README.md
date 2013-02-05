@@ -54,7 +54,7 @@ $rollingCurl
 
 ### Fetch A Very Large Number Of Pages
 
-Let's scrap google for the first 500 links & titles for "curl"
+Let's scrape google for the first 500 links & titles for "curl"
 
 ```php
 $rollingCurl = new \RollingCurl\RollingCurl();
