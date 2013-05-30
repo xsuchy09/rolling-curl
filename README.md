@@ -23,6 +23,24 @@ The second point is the most important one for two reasons:
 
 RollingCurl deals with both issues by maintaining a maximum number of simultaneous requests and "rolling" new requests into the queue as existing requests complete. When requests complete, and while other requests are still running, RollingCurl can run an anonymous function to process the fetched result. (You have the option to skip the function and instead process all requests once they are done, should you prefer.)
 
+## Installation (via composer)
+
+[Get composer](http://getcomposer.org/doc/00-intro.md) and add this in your requires section of the composer.json:
+
+```
+{
+    "require": {
+        "chuyskywalker/rolling-curl": "*"
+    }
+}
+```
+
+and then
+
+```
+composer install
+```
+
 ## Usage
 
 ### Basic Example
