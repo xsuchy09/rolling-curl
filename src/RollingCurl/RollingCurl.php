@@ -84,6 +84,15 @@ class RollingCurl
      */
     private $completedRequests = array();
 
+    /**
+     * @var int
+     *
+     * A count of executed calls
+     *
+     * While you can count() on pending/active, completed may be cleared.
+     */
+    private $completedRequestCount = 0;
+
 
     /**
      * Add a request to the request queue
@@ -201,6 +210,7 @@ class RollingCurl
 
                 // move the request to the completed set
                 $this->completedRequests[] = $request;
+                $this->completedRequestCount++;
 
                 // start a new request (it's important to do this before removing the old one)
                 if ($nextRequest = $this->getNextPendingRequest()) {
@@ -444,6 +454,47 @@ class RollingCurl
     public function getCompletedRequests()
     {
         return $this->completedRequests;
+    }
+
+    /**
+     * @param bool $useArray count the completedRequests array is true. Otherwise use the global counter.
+     * @return int
+     */
+    public function countCompleted($useArray=false)
+    {
+        return $useArray ? count($this->completedRequests) : $this->completedRequestCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function countPending()
+    {
+        return count($this->pendingRequests);
+    }
+
+    /**
+     * @return int
+     */
+    public function countActive()
+    {
+        return count($this->activeRequests);
+    }
+
+    /**
+     * Clear out all completed requests
+     *
+     * If you are running a very large number of requests, it's a good
+     * idea to call this every few completed requests so you don't run
+     * out of memory.
+     *
+     * @return RollingCurl
+     */
+    public function clearCompleted()
+    {
+        $this->completedRequests = array();
+        gc_collect_cycles();
+        return $this;
     }
 
 }
