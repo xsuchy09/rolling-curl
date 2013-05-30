@@ -21,8 +21,7 @@
             "email": "sam@rmcreative.ru",
             "homepage": "http://rmcreative.ru/",
             "role": "Developer"
-        },
-        
+        }
     ],
     "require": {
         "php": ">=5.3.0",
