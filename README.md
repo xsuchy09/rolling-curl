@@ -165,12 +165,10 @@ More examples can be found in the examples/ directory.
 
 ## TODO:
 
- - Setup composer support
  - PHPUnit test
  - Ensure PSR spec compatibility
  - Fix TODOs
  - Better validation on setters
- - Add method on \RollingCurl to removeRequest(\Request $request) to avoid too much memory usage for extremely large result sets
 
 Feel free to fork and pull request to help out with the above. :D
 
