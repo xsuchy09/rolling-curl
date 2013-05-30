@@ -196,12 +196,6 @@ class RollingCurl
                 $request->setResponseError(curl_error($transfer['handle']));
                 $request->setResponseInfo(curl_getinfo($transfer['handle']));
 
-                // if there is a callback, run it
-                if (is_callable($this->callback)) {
-                    $callback = $this->callback;
-                    $callback($request, $this);
-                }
-
                 // remove the request from the list of active requests
                 unset($this->activeRequests[$key]);
 
@@ -220,6 +214,12 @@ class RollingCurl
 
                 // remove the curl handle that just completed
                 curl_multi_remove_handle($master, $transfer['handle']);
+
+                // if there is a callback, run it
+                if (is_callable($this->callback)) {
+                    $callback = $this->callback;
+                    $callback($request, $this);
+                }
 
             }
 
