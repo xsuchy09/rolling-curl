@@ -23,6 +23,7 @@
             "role": "Developer"
         }
     ],
+    "license": "Apache-2.0",
     "require": {
         "php": ">=5.3.0",
         "ext-curl": "*",
