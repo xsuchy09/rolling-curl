@@ -500,8 +500,6 @@ class RollingCurl
      */
     public function getCompletedRequests()
     {
-        $this->prunePendingRequestQueue();
-
         return $this->completedRequests;
     }
 
