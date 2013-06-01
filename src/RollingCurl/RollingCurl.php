@@ -539,7 +539,7 @@ class RollingCurl
      */
     public function countPending()
     {
-        return count($this->pendingRequests);
+        return count($this->pendingRequests) - $this->pendingRequestsPosition;
     }
 
     /**
