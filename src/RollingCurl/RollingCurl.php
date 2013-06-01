@@ -193,14 +193,10 @@ class RollingCurl
 
         do {
 
-            while (($execrun = curl_multi_exec($master, $running)) == CURLM_CALL_MULTI_PERFORM);
+            // ensure we're running
+            $status = curl_multi_exec($master, $active);
 
-            if ($execrun != CURLM_OK) {
-                // todo: throw exception
-                break;
-            }
-
-            // a request was just completed -- find out which one
+            // see if there is anything to read
             while ($transfer = curl_multi_info_read($master)) {
 
                 // get the request object back and put the curl response into it
@@ -237,16 +233,18 @@ class RollingCurl
                     $callback($request, $this);
                 }
 
+                // if something was requeued, this will get it running/update our loop check values
+                $status = curl_multi_exec($master, $active);
+
             }
 
-            if ($running) {
-                curl_multi_select($master, $this->timeout);
-            }
+            // todo: if ($status === errorconst) { exception }
 
-            // keep the loop going as long as multi_exec says it is running
-        } while ($running);
+            // see if we're done yet or not
+        } while ($status === CURLM_CALL_MULTI_PERFORM || $active);
 
         curl_multi_close($master);
+
     }
 
 
