@@ -76,11 +76,6 @@ class RollingCurl
     private $pendingRequestsPosition = 0;
 
     /**
-     * @var int
-     */
-    private $pendingRequestsCount = 0;
-
-    /**
      * @var Request[]
      *
      * Requests currently being processed by curl
@@ -113,7 +108,6 @@ class RollingCurl
     public function add(Request $request)
     {
         $this->pendingRequests[] = $request;
-        $this->pendingRequestsCount += 1;
 
         return $this;
     }
@@ -462,8 +456,8 @@ class RollingCurl
     {
         $lastPosition = $this->pendingRequestsPosition + $limit;
 
-        if ($lastPosition > $this->pendingRequestsCount) {
-            $lastPosition = $this->pendingRequestsCount;
+        if ($lastPosition > count($this->pendingRequests)) {
+            $lastPosition = count($this->pendingRequests);
         }
 
         return $lastPosition;
@@ -526,12 +520,12 @@ class RollingCurl
     {
         $tmp = array();
 
-        for ($i = $this->pendingRequestsPosition; $i < $this->pendingRequestsCount; ++$i) {
+        $pendingRequestCount = count($this->pendingRequests);
+        for ($i = $this->pendingRequestsPosition; $i < $pendingRequestCount; ++$i) {
             $tmp[] = $this->pendingRequests[$i];
         }
 
         $this->pendingRequests         = $tmp;
-        $this->pendingRequestsCount    = count($this->pendingRequests);
         $this->pendingRequestsPosition = 0;
     }
 
