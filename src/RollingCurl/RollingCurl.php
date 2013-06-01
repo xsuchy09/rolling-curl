@@ -512,7 +512,7 @@ class RollingCurl
      * This method creates a new array starting at the first un-processed
      * request, replaces the old queue and resets counters.
      */
-    private function prunePendingRequestQueue()
+    public function prunePendingRequestQueue()
     {
         $tmp = array();
 
@@ -562,7 +562,6 @@ class RollingCurl
     public function clearCompleted()
     {
         $this->completedRequests = array();
-        $this->prunePendingRequestQueue();
         gc_collect_cycles();
         return $this;
     }
