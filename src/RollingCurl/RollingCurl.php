@@ -261,7 +261,25 @@ class RollingCurl
 
             }
 
-            // todo: if ($status === errorconst) { exception }
+            // Error detection -- this is very, very rare
+            $err = null;
+            switch ($status) {
+                case CURLM_BAD_EASY_HANDLE:
+                    $err = 'CURLM_BAD_EASY_HANDLE';
+                    break;
+                case CURLM_OUT_OF_MEMORY:
+                    $err = 'CURLM_OUT_OF_MEMORY';
+                    break;
+                case CURLM_INTERNAL_ERROR:
+                    $err = 'CURLM_INTERNAL_ERROR';
+                    break;
+                case CURLM_BAD_HANDLE:
+                    $err = 'CURLM_BAD_HANDLE';
+                    break;
+            }
+            if ($err) {
+                throw new \Exception("curl_multi_exec failed with error code ($status) const ($err)");
+            }
 
             // see if we're done yet or not
         } while ($status === CURLM_CALL_MULTI_PERFORM || $active);
