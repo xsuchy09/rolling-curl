@@ -32,13 +32,6 @@ class RollingCurl
     private $simultaneousLimit = 5;
 
     /**
-     * @var int
-     *
-     * Timeout is the timeout used for curl_multi_select.
-     */
-    private $timeout = 10;
-
-    /**
      * @var \Closure
      *
      * Callback function to be applied to each result.
@@ -69,6 +62,11 @@ class RollingCurl
      * Requests queued to be processed
      */
     private $pendingRequests = array();
+
+    /**
+     * @var int
+     */
+    private $pendingRequestsPosition = 0;
 
     /**
      * @var Request[]
@@ -103,6 +101,7 @@ class RollingCurl
     public function add(Request $request)
     {
         $this->pendingRequests[] = $request;
+
         return $this;
     }
 
@@ -405,28 +404,6 @@ class RollingCurl
     }
 
     /**
-     * @param int $timeout
-     * @throws \InvalidArgumentException
-     * @return RollingCurl
-     */
-    public function setTimeout($timeout)
-    {
-        if (!is_int($timeout) || $timeout < 0) {
-            throw new \InvalidArgumentException("Timeout must be an int >= 0");
-        }
-        $this->timeout = $timeout;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    /**
      * Set the limit for how many cURL requests will be execute simultaneously.
      *
      * Please be mindful that if you set this too high, requests are likely to fail
@@ -455,36 +432,60 @@ class RollingCurl
     }
 
     /**
-     * Return the next $limit pending requests (may return nothing)
-     *
-     * @param int $limit
-     * @return Request[]
-     */
-    public function getNextPendingRequests($limit = 1)
-    {
-        return array_splice($this->pendingRequests, 0, $limit);
-    }
-
-    /**
-     * Return the next pending requests (may return nothing)
-     *
-     * @return Request|null
-     */
-    public function getNextPendingRequest()
-    {
-        $next = $this->getNextPendingRequests();
-        if (count($next)) {
-            return $next[0];
-        }
-        return null;
-    }
-
-    /**
      * @return Request[]
      */
     public function getCompletedRequests()
     {
         return $this->completedRequests;
+    }
+
+    /**
+     * Return the next $limit pending requests (may return an empty array)
+     *
+     * If you pass $limit <= 0 you will get all the pending requests back
+     *
+     * @param int $limit
+     * @return Request[] May be empty
+     */
+    private function getNextPendingRequests($limit = 1)
+    {
+        $requests = array();
+        while ($limit--) {
+            if (!isset($this->pendingRequests[$this->pendingRequestsPosition])) {
+                break;
+            }
+            $requests[] = $this->pendingRequests[$this->pendingRequestsPosition];
+            $this->pendingRequestsPosition++;
+        }
+        return $requests;
+    }
+
+    /**
+     * Get the next pending request, or return null
+     *
+     * @return null|Request
+     */
+    private function getNextPendingRequest()
+    {
+        $next = $this->getNextPendingRequests();
+        return count($next) ? $next[0] : null;
+    }
+
+    /**
+     * Removes requests from the queue that have already been processed
+     *
+     * Beceause the request queue does not shrink during processing
+     * (merely traversed), it is sometimes necessary to prune the queue.
+     * This method creates a new array starting at the first un-processed
+     * request, replaces the old queue and resets counters.
+     *
+     * @return RollingCurl
+     */
+    public function prunePendingRequestQueue()
+    {
+        $this->pendingRequests = $this->getNextPendingRequests(0);
+        $this->pendingRequestsPosition = 0;
+        return $this;
     }
 
     /**
@@ -501,7 +502,7 @@ class RollingCurl
      */
     public function countPending()
     {
-        return count($this->pendingRequests);
+        return count($this->pendingRequests) - $this->pendingRequestsPosition;
     }
 
     /**
