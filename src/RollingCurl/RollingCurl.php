@@ -334,15 +334,13 @@ class RollingCurl
      * Define an anonymous callback to handle the response:
      *
      *     $rc = new RollingCurl()
-     *     $rc->setCallback(function($response, $info, $request, $rolling_curl) {
+     *     $rc->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) {
      *         // process
      *     });
      *
-     * Function should take four parameters: $response, $info, $request, $rolling_callback.
-     * $response is response body
-     * $info is additional curl info
-     * $request is the original request
-     * $rolling_curl is the current instance of the RollingCurl (useful if you want to requeue a URL)
+     * Function should take two parameters: \RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl
+     *   $request is original request object, but now with body, headers, response code, etc
+     *   $rollingCurl is the rolling curl object itself (useful if you want to re/queue a URL)
      *
      * @param \Closure $callback
      * @return RollingCurl
