@@ -32,13 +32,6 @@ class RollingCurl
     private $simultaneousLimit = 5;
 
     /**
-     * @var int
-     *
-     * Timeout is the timeout used for curl_multi_select.
-     */
-    private $timeout = 10;
-
-    /**
      * @var \Closure
      *
      * Callback function to be applied to each result.
@@ -375,28 +368,6 @@ class RollingCurl
     public function getOptions()
     {
         return $this->options;
-    }
-
-    /**
-     * @param int $timeout
-     * @throws \InvalidArgumentException
-     * @return RollingCurl
-     */
-    public function setTimeout($timeout)
-    {
-        if (!is_int($timeout) || $timeout < 0) {
-            throw new \InvalidArgumentException("Timeout must be an int >= 0");
-        }
-        $this->timeout = $timeout;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getTimeout()
-    {
-        return $this->timeout;
     }
 
     /**
