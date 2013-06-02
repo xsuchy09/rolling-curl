@@ -428,74 +428,6 @@ class RollingCurl
     }
 
     /**
-     * Return the next $limit pending requests (may return nothing)
-     *
-     * @param int $limit
-     * @return Request[]
-     */
-    public function getNextPendingRequests($limit = 1)
-    {
-        $lastPosition = $this->getEndOfPendingRequestsRange($limit);
-        $ret = $this->getRequestsFromQueue($lastPosition);
-
-        return $ret;
-
-    }
-
-
-    /**
-     * Find the index where we should stop traversing
-     *
-     * @param int $limit
-     *
-     * @return int
-     */
-    private function getEndOfPendingRequestsRange($limit)
-    {
-        $lastPosition = $this->pendingRequestsPosition + $limit;
-
-        if ($lastPosition > count($this->pendingRequests)) {
-            $lastPosition = count($this->pendingRequests);
-        }
-
-        return $lastPosition;
-    }
-
-
-    /**
-     * Pull the nescessary requests from the queue
-     *
-     * @param int $lastPosition
-     *
-     * @return array
-     */
-    private function getRequestsFromQueue($lastPosition)
-    {
-        $ret = array();
-        for ($i = $this->pendingRequestsPosition; $i < $lastPosition; ++$i) {
-            $ret[] = $this->pendingRequests[$i];
-        }
-
-        $this->pendingRequestsPosition = $lastPosition;
-
-        return $ret;
-    }
-
-    /**
-     * Return the next pending requests (may return nothing)
-     *
-     * @return Request|null
-     */
-    public function getNextPendingRequest()
-    {
-        $next = $this->getNextPendingRequests();
-        if (count($next)) {
-            return $next[0];
-        }
-        return null;
-    }
-
-    /**
      * @return Request[]
      */
     public function getCompletedRequests()
@@ -503,6 +435,37 @@ class RollingCurl
         return $this->completedRequests;
     }
 
+    /**
+     * Return the next $limit pending requests (may return an empty array)
+     *
+     * If you pass $limit <= 0 you will get all the pending requests back
+     *
+     * @param int $limit
+     * @return Request[] May be empty
+     */
+    private function getNextPendingRequests($limit = 1)
+    {
+        $requests = array();
+        while ($limit--) {
+            if (!isset($this->pendingRequests[$this->pendingRequestsPosition])) {
+                break;
+            }
+            $requests[] = $this->pendingRequests[$this->pendingRequestsPosition];
+            $this->pendingRequestsPosition++;
+        }
+        return $requests;
+    }
+
+    /**
+     * Get the next pending request, or return null
+     *
+     * @return null|Request
+     */
+    private function getNextPendingRequest()
+    {
+        $next = $this->getNextPendingRequests();
+        return count($next) ? $next[0] : null;
+    }
 
     /**
      * Removes requests from the queue that have already been processed
@@ -511,18 +474,14 @@ class RollingCurl
      * (merely traversed), it is sometimes necessary to prune the queue.
      * This method creates a new array starting at the first un-processed
      * request, replaces the old queue and resets counters.
+     *
+     * @return RollingCurl
      */
     public function prunePendingRequestQueue()
     {
-        $tmp = array();
-
-        $pendingRequestCount = count($this->pendingRequests);
-        for ($i = $this->pendingRequestsPosition; $i < $pendingRequestCount; ++$i) {
-            $tmp[] = $this->pendingRequests[$i];
-        }
-
-        $this->pendingRequests         = $tmp;
+        $this->pendingRequests = $this->getNextPendingRequests(0);
         $this->pendingRequestsPosition = 0;
+        return $this;
     }
 
     /**
