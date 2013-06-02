@@ -19,7 +19,9 @@ $rollingCurl
         if (preg_match_all('#<h3 class="r"><a href="([^"]+)">(.*)</a></h3>#iU', $request->getResponseText(), $out)) {
             foreach ($out[1] as $idx => $url) {
                 parse_str(parse_url($url, PHP_URL_QUERY), $params);
-                $results[$params['q']] = strip_tags($out[2][$idx]);
+                if (isset($params['q'])) {
+                    $results[$params['q']] = strip_tags($out[2][$idx]);
+                }
             }
         }
         echo "Fetch complete for (" . $request->getUrl() . ")" . PHP_EOL;
