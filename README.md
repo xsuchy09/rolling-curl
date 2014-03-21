@@ -65,7 +65,6 @@ $rollingCurl
     })
     ->setSimultaneousLimit(3)
     ->execute();
-;
 ```
 
 ### Fetch A Very Large Number Of Pages
