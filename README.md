@@ -124,7 +124,6 @@ $rollingCurl
     })
     ->setSimultaneousLimit(3)
     ->execute();
-;
 ```
 
 For *a single* request:
