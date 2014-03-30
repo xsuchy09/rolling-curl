@@ -39,7 +39,7 @@ class Request
     /**
      * @var array
      */
-    private $options;
+    private $options = array();
     /**
      * @var mixed
      */
@@ -68,7 +68,6 @@ class Request
      */
     function __construct($url, $method="GET")
     {
-        $this->options = [];
         $this->setUrl($url);
         $this->setMethod($method);
     }
