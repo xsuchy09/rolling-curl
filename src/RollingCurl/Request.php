@@ -68,6 +68,7 @@ class Request
      */
     function __construct($url, $method="GET")
     {
+        $this->options = [];
         $this->setUrl($url);
         $this->setMethod($method);
     }
