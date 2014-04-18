@@ -39,7 +39,7 @@ class Request
     /**
      * @var array
      */
-    private $options;
+    private $options = array();
     /**
      * @var mixed
      */
