@@ -53,6 +53,13 @@ class RollingCurl
 
     /**
      * @var array
+     *
+     * Set your default multicurl options
+     */
+    protected $multicurlOptions = array();
+
+    /**
+     * @var array
      */
     private $headers = array();
 
@@ -196,6 +203,9 @@ class RollingCurl
     {
 
         $master = curl_multi_init();
+        foreach ($this->multicurlOptions AS $multiOption => $multiValue) {
+            curl_multi_setopt($master, $multiOption, $multiValue);
+        }
 
         // start the first batch of requests
         $firstBatch = $this->getNextPendingRequests($this->getSimultaneousLimit());
@@ -417,6 +427,44 @@ class RollingCurl
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @param array $multicurlOptions
+     * @throws \InvalidArgumentException
+     * @return RollingCurl
+     */
+    public function setMulticurlOptions($multicurlOptions)
+    {
+        if (!is_array($multicurlOptions)) {
+            throw new \InvalidArgumentException("multicurlOptions must be an array");
+        }
+        $this->multicurlOptions = $multicurlOptions;
+        return $this;
+    }
+
+    /**
+     * Override and add multicurlOptions
+     *
+     * @param array $multicurlOptions
+     * @throws \InvalidArgumentException
+     * @return RollingCurl
+     */
+    public function addMulticurlOptions($multicurlOptions)
+    {
+        if (!is_array($multicurlOptions)) {
+            throw new \InvalidArgumentException("multicurlOptions must be an array");
+        }
+        $this->multicurlOptions = $multicurlOptions + $this->multicurlOptions;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMulticurlOptions()
+    {
+        return $this->multicurlOptions;
     }
 
     /**
