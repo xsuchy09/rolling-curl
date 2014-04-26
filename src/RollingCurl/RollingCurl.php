@@ -32,7 +32,7 @@ class RollingCurl
     private $simultaneousLimit = 5;
 
     /**
-     * @var \Closure
+     * @var callable
      *
      * Callback function to be applied to each result.
      */
@@ -341,28 +341,47 @@ class RollingCurl
     }
 
     /**
-     * Define an anonymous callback to handle the response:
+     * Define a callable to handle the response. 
+     * 
+     * It can be an anonymous function:
      *
-     *     $rc = new RollingCurl()
-     *     $rc->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) {
+     *     $rc = new RollingCurl();
+     *     $rc->setCallback(function($request, $rolling_curl) {
      *         // process
      *     });
      *
-     * Function should take two parameters: \RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl
+     * Or an existing function:
+     *
+     *     class MyClass {
+     *         function doCurl() {
+     *             $rc = new RollingCurl();
+     *             $rc->setCallback(array($this, 'callback'));
+     *         }
+     *
+     *         // Cannot be private or protected
+     *         public function callback($request, $rolling_curl) {
+     *             // process
+     *         } 
+     *     }
+     *
+     * Function can take up to two parameters: \RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl
      *   $request is original request object, but now with body, headers, response code, etc
      *   $rollingCurl is the rolling curl object itself (useful if you want to re/queue a URL)
      *
-     * @param \Closure $callback
+     * @param callable $callback
      * @return RollingCurl
      */
-    public function setCallback(\Closure $callback)
+    public function setCallback($callback)
     {
+        if (!is_callable($callback)) {
+            throw new \InvalidArgumentException("must pass in a callable instance");
+        }
         $this->callback = $callback;
         return $this;
     }
 
     /**
-     * @return \Closure
+     * @return callable
      */
     public function getCallback()
     {
