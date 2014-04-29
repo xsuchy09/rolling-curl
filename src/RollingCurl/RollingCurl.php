@@ -369,6 +369,7 @@ class RollingCurl
      *   $rollingCurl is the rolling curl object itself (useful if you want to re/queue a URL)
      *
      * @param callable $callback
+     * @throws \InvalidArgumentException
      * @return RollingCurl
      */
     public function setCallback($callback)
