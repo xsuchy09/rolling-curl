@@ -224,6 +224,8 @@ class RollingCurl
             $this->activeRequests[(string)$ch] = $request;
         }
 
+        $active = null;
+
         do {
 
             // ensure we're running
