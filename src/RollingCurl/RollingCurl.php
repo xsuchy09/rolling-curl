@@ -221,7 +221,7 @@ class RollingCurl
             $options = $this->prepareRequestOptions($request);
             curl_setopt_array($ch, $options);
             curl_multi_add_handle($master, $ch);
-            $this->activeRequests[(string)$ch] = $request;
+            $this->activeRequests[(int) $ch] = $request;
         }
 
         $active = null;
@@ -235,7 +235,7 @@ class RollingCurl
             while ($transfer = curl_multi_info_read($master)) {
 
                 // get the request object back and put the curl response into it
-                $key     = (string)$transfer['handle'];
+                $key     = (int) $transfer['handle'];
                 $request = $this->activeRequests[$key];
                 $request->setResponseText(curl_multi_getcontent($transfer['handle']));
                 $request->setResponseErrno(curl_errno($transfer['handle']));
@@ -256,7 +256,7 @@ class RollingCurl
                     $options = $this->prepareRequestOptions($nextRequest);
                     curl_setopt_array($ch, $options);
                     curl_multi_add_handle($master, $ch);
-                    $this->activeRequests[(string)$ch] = $nextRequest;
+                    $this->activeRequests[(int) $ch] = $nextRequest;
                 }
 
                 // remove the curl handle that just completed
