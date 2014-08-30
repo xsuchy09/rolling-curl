@@ -230,7 +230,6 @@ class RollingCurl
 
             // ensure we're running
             $status = curl_multi_exec($master, $active);
-
             // see if there is anything to read
             while ($transfer = curl_multi_info_read($master)) {
 
@@ -292,6 +291,9 @@ class RollingCurl
             if ($err) {
                 throw new \Exception("curl_multi_exec failed with error code ($status) const ($err)");
             }
+
+            // Block until *something* has happened to avoid burning CPU cycles for naught
+            curl_multi_select($master);
 
             // see if we're done yet or not
         } while ($status === CURLM_CALL_MULTI_PERFORM || $active);
