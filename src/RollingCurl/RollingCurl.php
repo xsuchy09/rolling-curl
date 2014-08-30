@@ -366,7 +366,7 @@ class RollingCurl
      *         } 
      *     }
      *
-     * Function can take up to two parameters: \RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl
+     * The called code should expect two parameters: \RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl
      *   $request is original request object, but now with body, headers, response code, etc
      *   $rollingCurl is the rolling curl object itself (useful if you want to re/queue a URL)
      *
