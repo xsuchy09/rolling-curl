@@ -39,6 +39,13 @@ class RollingCurl
     private $callback;
 
     /**
+     * @var callable
+     *
+     * Callback function to be called between result processing.
+     */
+    private $idleCallback;
+
+    /**
      * @var array
      *
      * Set your base options that you want to be used with EVERY request. (Can be overridden individually)
@@ -226,6 +233,10 @@ class RollingCurl
 
         $active = null;
 
+        // Use a shorter select timeout when there is something to do between calls
+        $idleCallback = $this->idleCallback;
+        $selectTimeout = $idleCallback ? 0.1 : 1.0;
+
         do {
 
             // ensure we're running
@@ -292,8 +303,10 @@ class RollingCurl
                 throw new \Exception("curl_multi_exec failed with error code ($status) const ($err)");
             }
 
-            // Block until *something* has happened to avoid burning CPU cycles for naught
-            curl_multi_select($master);
+            // Block until *something* happens to avoid burning CPU cycles for naught
+            while(0 == curl_multi_select($master, $selectTimeout) && $idleCallback) {
+                $idleCallback($this);
+            }
 
             // see if we're done yet or not
         } while ($status === CURLM_CALL_MULTI_PERFORM || $active);
@@ -392,6 +405,27 @@ class RollingCurl
     {
         return $this->callback;
     }
+
+    /** Define a callable to be called when waiting for responses.
+     *
+     * @param callable $callback
+     * @return RollingCurl
+     */
+    public function setIdleCallback(callable $callback)
+    {
+        $this->idleCallback = $callback;
+        return $this;
+    }
+
+    /**
+     *
+     * @return callable
+     */
+    public function getIdleCallback()
+    {
+        return $this->idleCallback;
+    }
+
 
     /**
      * @param array $headers
