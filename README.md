@@ -90,6 +90,11 @@ $rollingCurl
                 $results[$params['q']] = strip_tags($out[2][$idx]);
             }
         }
+
+        // Clear list of completed requests and prune pending request queue to avoid memory growth
+        $rollingCurl->clearCompleted();
+        $rollingCurl->prunePendingRequestQueue();
+
         echo "Fetch complete for (" . $request->getUrl() . ")" . PHP_EOL;
     })
     ->setSimultaneousLimit(10)
