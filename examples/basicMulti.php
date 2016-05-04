@@ -16,7 +16,7 @@ $rollingCurl
 			} else {
 				$title = '[No Title Tag Found]';
 			}
-			echo "Fetch complete for (" . $request->getUrl() . ") $title " . PHP_EOL;
+			echo 'Fetch complete for (' . $request->getUrl() . ') ' . $title . PHP_EOL;
 		})
 		->execute();
 ;

@@ -13,7 +13,7 @@ for ($i = 0; $i <= 500; $i+=10) {
 $results = array();
 
 $start = microtime(true);
-echo "Fetching..." . PHP_EOL;
+echo 'Fetching...' . PHP_EOL;
 $rollingCurl
 		->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use (&$results) {
 			if (preg_match_all('#<h3 class="r"><a href="([^"]+)">(.*)</a></h3>#iU', $request->getResponseText(), $out)) {
@@ -24,12 +24,12 @@ $rollingCurl
 					}
 				}
 			}
-			echo "Fetch complete for (" . $request->getUrl() . ")" . PHP_EOL;
+			echo 'Fetch complete for (' . $request->getUrl() . ')' . PHP_EOL;
 		})
 		->setSimultaneousLimit(10)
 		->execute();
 ;
-echo "...done in " . (microtime(true) - $start) . PHP_EOL;
+echo '...done in ' . (microtime(true) - $start) . PHP_EOL;
 
-echo "All results: " . PHP_EOL;
+echo 'All results: ' . PHP_EOL;
 print_r($results);

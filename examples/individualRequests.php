@@ -31,7 +31,7 @@ foreach ($sites as $url => $options) {
 
 $rollingCurl
 		->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) {
-			echo "Fetch complete for (" . $request->getUrl() . ")" . PHP_EOL;
+			echo 'Fetch complete for (' . $request->getUrl() . ')' . PHP_EOL;
 		})
 		->execute()
 ;
