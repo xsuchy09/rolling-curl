@@ -20,258 +20,266 @@ namespace RollingCurl;
  */
 class Request
 {
-    /**
-     * @var string
-     */
-    private $url;
-    /**
-     * @var string
-     */
-    private $method;
-    /**
-     * @var string
-     */
-    private $postData;
-    /**
-     * @var array
-     */
-    private $headers;
-    /**
-     * @var array
-     */
-    private $options = array();
-    /**
-     * @var mixed
-     */
-    private $extraInfo;
-    /**
-     * @var string
-     */
-    private $responseText;
-    /**
-     * @var array
-     */
-    private $responseInfo;
-    /**
-     * @var string
-     */
-    private $responseError;
-    /**
-     * @var int
-     */
-    private $responseErrno;
 
-    /**
-     * @param string $url
-     * @param string $method
-     * @return \RollingCurl\Request
-     */
-    function __construct($url, $method="GET")
-    {
-        $this->setUrl($url);
-        $this->setMethod($method);
-    }
+	/**
+	 * @var string
+	 */
+	private $url;
 
-    /**
-     * You may wish to store some "extra" info with this request, you can put any of that here.
-     *
-     * @param mixed $extraInfo
-     * @return \RollingCurl\Request
-     */
-    public function setExtraInfo($extraInfo)
-    {
-        $this->extraInfo = $extraInfo;
-        return $this;
-    }
+	/**
+	 * @var string
+	 */
+	private $method;
 
-    /**
-     * @return mixed
-     */
-    public function getExtraInfo()
-    {
-        return $this->extraInfo;
-    }
+	/**
+	 * @var string
+	 */
+	private $postData;
 
-    /**
-     * @param array $headers
-     * @return \RollingCurl\Request
-     */
-    public function setHeaders($headers)
-    {
-        $this->headers = $headers;
-        return $this;
-    }
+	/**
+	 * @var array
+	 */
+	private $headers;
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
+	/**
+	 * @var array
+	 */
+	private $options = array();
 
-    /**
-     * @param string $method
-     * @return \RollingCurl\Request
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-        return $this;
-    }
+	/**
+	 * @var mixed
+	 */
+	private $extraInfo;
 
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
+	/**
+	 * @var string
+	 */
+	private $responseText;
 
-    /**
-     * @param array $options
-     * @throws \InvalidArgumentException
-     * @return \RollingCurl\Request
-     */
-    public function setOptions($options)
-    {
-        if (!is_array($options)) {
-            throw new \InvalidArgumentException("options must be an array");
-        }
-        $this->options = $options;
-        return $this;
-    }
+	/**
+	 * @var array
+	 */
+	private $responseInfo;
 
-    /**
-     * @param array $options
-     * @throws \InvalidArgumentException
-     * @return \RollingCurl\Request
-     */
-    public function addOptions($options)
-    {
-        if (!is_array($options)) {
-            throw new \InvalidArgumentException("options must be an array");
-        }
-        $this->options = $options + $this->options;
-        return $this;
-    }
+	/**
+	 * @var string
+	 */
+	private $responseError;
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
+	/**
+	 * @var int
+	 */
+	private $responseErrno;
 
-    /**
-     * @param string $postData
-     * @return \RollingCurl\Request
-     */
-    public function setPostData($postData)
-    {
-        $this->postData = $postData;
-        return $this;
-    }
+	/**
+	 * @param string $url
+	 * @param string $method
+	 * @return \RollingCurl\Request
+	 */
+	function __construct($url, $method = "GET")
+	{
+		$this->setUrl($url);
+		$this->setMethod($method);
+	}
 
-    /**
-     * @return string
-     */
-    public function getPostData()
-    {
-        return $this->postData;
-    }
+	/**
+	 * You may wish to store some "extra" info with this request, you can put any of that here.
+	 *
+	 * @param mixed $extraInfo
+	 * @return \RollingCurl\Request
+	 */
+	public function setExtraInfo($extraInfo)
+	{
+		$this->extraInfo = $extraInfo;
+		return $this;
+	}
 
-    /**
-     * @param int $responseErrno
-     * @return \RollingCurl\Request
-     */
-    public function setResponseErrno($responseErrno)
-    {
-        $this->responseErrno = $responseErrno;
-        return $this;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getExtraInfo()
+	{
+		return $this->extraInfo;
+	}
 
-    /**
-     * @return int
-     */
-    public function getResponseErrno()
-    {
-        return $this->responseErrno;
-    }
+	/**
+	 * @param array $headers
+	 * @return \RollingCurl\Request
+	 */
+	public function setHeaders($headers)
+	{
+		$this->headers = $headers;
+		return $this;
+	}
 
-    /**
-     * @param string $responseError
-     * @return \RollingCurl\Request
-     */
-    public function setResponseError($responseError)
-    {
-        $this->responseError = $responseError;
-        return $this;
-    }
+	/**
+	 * @return array
+	 */
+	public function getHeaders()
+	{
+		return $this->headers;
+	}
 
-    /**
-     * @return string
-     */
-    public function getResponseError()
-    {
-        return $this->responseError;
-    }
+	/**
+	 * @param string $method
+	 * @return \RollingCurl\Request
+	 */
+	public function setMethod($method)
+	{
+		$this->method = $method;
+		return $this;
+	}
 
-    /**
-     * @param array $responseInfo
-     * @return \RollingCurl\Request
-     */
-    public function setResponseInfo($responseInfo)
-    {
-        $this->responseInfo = $responseInfo;
-        return $this;
-    }
+	/**
+	 * @return string
+	 */
+	public function getMethod()
+	{
+		return $this->method;
+	}
 
-    /**
-     * @return array
-     */
-    public function getResponseInfo()
-    {
-        return $this->responseInfo;
-    }
+	/**
+	 * @param array $options
+	 * @throws \InvalidArgumentException
+	 * @return \RollingCurl\Request
+	 */
+	public function setOptions($options)
+	{
+		if (!is_array($options)) {
+			throw new \InvalidArgumentException("options must be an array");
+		}
+		$this->options = $options;
+		return $this;
+	}
 
-    /**
-     * @param string $responseText
-     * @return \RollingCurl\Request
-     */
-    public function setResponseText($responseText)
-    {
-        $this->responseText = $responseText;
-        return $this;
-    }
+	/**
+	 * @param array $options
+	 * @throws \InvalidArgumentException
+	 * @return \RollingCurl\Request
+	 */
+	public function addOptions($options)
+	{
+		if (!is_array($options)) {
+			throw new \InvalidArgumentException("options must be an array");
+		}
+		$this->options = $options + $this->options;
+		return $this;
+	}
 
-    /**
-     * @return string
-     */
-    public function getResponseText()
-    {
-        return $this->responseText;
-    }
+	/**
+	 * @return array
+	 */
+	public function getOptions()
+	{
+		return $this->options;
+	}
 
-    /**
-     * @param string $url
-     * @return \RollingCurl\Request
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-        return $this;
-    }
+	/**
+	 * @param string $postData
+	 * @return \RollingCurl\Request
+	 */
+	public function setPostData($postData)
+	{
+		$this->postData = $postData;
+		return $this;
+	}
 
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
+	/**
+	 * @return string
+	 */
+	public function getPostData()
+	{
+		return $this->postData;
+	}
 
+	/**
+	 * @param int $responseErrno
+	 * @return \RollingCurl\Request
+	 */
+	public function setResponseErrno($responseErrno)
+	{
+		$this->responseErrno = $responseErrno;
+		return $this;
+	}
 
+	/**
+	 * @return int
+	 */
+	public function getResponseErrno()
+	{
+		return $this->responseErrno;
+	}
+
+	/**
+	 * @param string $responseError
+	 * @return \RollingCurl\Request
+	 */
+	public function setResponseError($responseError)
+	{
+		$this->responseError = $responseError;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getResponseError()
+	{
+		return $this->responseError;
+	}
+
+	/**
+	 * @param array $responseInfo
+	 * @return \RollingCurl\Request
+	 */
+	public function setResponseInfo($responseInfo)
+	{
+		$this->responseInfo = $responseInfo;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getResponseInfo()
+	{
+		return $this->responseInfo;
+	}
+
+	/**
+	 * @param string $responseText
+	 * @return \RollingCurl\Request
+	 */
+	public function setResponseText($responseText)
+	{
+		$this->responseText = $responseText;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getResponseText()
+	{
+		return $this->responseText;
+	}
+
+	/**
+	 * @param string $url
+	 * @return \RollingCurl\Request
+	 */
+	public function setUrl($url)
+	{
+		$this->url = $url;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUrl()
+	{
+		return $this->url;
+	}
 
 }
