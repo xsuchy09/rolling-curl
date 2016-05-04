@@ -5,12 +5,13 @@
  * a limited number of simultaneous connections
  *
  * @package RollingCurl
- * @version 1.0
+ * @version 3.0
  * @author Jeff Minard (http://jrm.cc/)
  * @author Josh Fraser (www.joshfraser.com)
  * @author Alexander Makarov (http://rmcreative.ru/)
+ * @author Petr Suchy (xsuchy09) <suchy@wamos.cz> <http://www.wamos.cz>
  * @license Apache License 2.0
- * @link https://github.com/chuyskywalker/rolling-curl
+ * @link https://github.com/xsuchy09/rolling-curl
  */
 
 namespace RollingCurl;
@@ -44,7 +45,7 @@ class Request
 	/**
 	 * @var array
 	 */
-	private $options = array();
+	private $options = [];
 
 	/**
 	 * @var mixed
@@ -76,7 +77,7 @@ class Request
 	 * @param string $method
 	 * @return \RollingCurl\Request
 	 */
-	function __construct($url, $method = "GET")
+	function __construct($url, $method = 'GET')
 	{
 		$this->setUrl($url);
 		$this->setMethod($method);
@@ -146,7 +147,7 @@ class Request
 	public function setOptions($options)
 	{
 		if (!is_array($options)) {
-			throw new \InvalidArgumentException("options must be an array");
+			throw new \InvalidArgumentException('options must be an array');
 		}
 		$this->options = $options;
 		return $this;
@@ -160,7 +161,7 @@ class Request
 	public function addOptions($options)
 	{
 		if (!is_array($options)) {
-			throw new \InvalidArgumentException("options must be an array");
+			throw new \InvalidArgumentException('options must be an array');
 		}
 		$this->options = $options + $this->options;
 		return $this;

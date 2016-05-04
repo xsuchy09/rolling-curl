@@ -6,6 +6,7 @@ Authors:
  - Jeff Minard (jrm.cc)
  - Josh Fraser (joshfraser.com)
  - Alexander Makarov (rmcreative.ru)
+ - Petr Suchy (xsuchy09 - www.wamos.cz)
 
 ## Overview
 
@@ -30,7 +31,7 @@ RollingCurl deals with both issues by maintaining a maximum number of simultaneo
 ```
 {
     "require": {
-        "chuyskywalker/rolling-curl": "*"
+        "xsuchy09/rolling-curl": "*"
     }
 }
 ```

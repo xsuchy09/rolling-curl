@@ -5,12 +5,13 @@
  * a consistent number of simultaneous connections
  *
  * @package RollingCurl
- * @version 2.0
+ * @version 3.0
  * @author Jeff Minard (http://jrm.cc/)
  * @author Josh Fraser (www.joshfraser.com)
  * @author Alexander Makarov (http://rmcreative.ru/)
+ * @author Petr Suchy (xsuchy09) <suchy@wamos.cz> <http://www.wamos.cz>
  * @license Apache License 2.0
- * @link https://github.com/chuyskywalker/rolling-curl
+ * @link https://github.com/xsuchy09/rolling-curl
  */
 
 namespace RollingCurl;
@@ -62,19 +63,19 @@ class RollingCurl
 	 *
 	 * Set your default multicurl options
 	 */
-	protected $multicurlOptions = array();
+	protected $multicurlOptions = [];
 
 	/**
 	 * @var array
 	 */
-	private $headers = array();
+	private $headers = [];
 
 	/**
 	 * @var Request[]
 	 *
 	 * Requests queued to be processed
 	 */
-	private $pendingRequests = array();
+	private $pendingRequests = [];
 
 	/**
 	 * @var int
@@ -86,14 +87,14 @@ class RollingCurl
 	 *
 	 * Requests currently being processed by curl
 	 */
-	private $activeRequests = array();
+	private $activeRequests = [];
 
 	/**
 	 * @var Request[]
 	 *
 	 * All processed requests
 	 */
-	private $completedRequests = array();
+	private $completedRequests = [];
 
 	/**
 	 * @var int
@@ -127,7 +128,7 @@ class RollingCurl
 	 * @param array $options
 	 * @return RollingCurl
 	 */
-	public function request($url, $method = "GET", $postData = null, $headers = null, $options = null)
+	public function request($url, $method = 'GET', $postData = null, $headers = null, $options = null)
 	{
 		$newRequest = new Request($url, $method);
 		if ($postData) {
@@ -152,7 +153,7 @@ class RollingCurl
 	 */
 	public function get($url, $headers = null, $options = null)
 	{
-		return $this->request($url, "GET", null, $headers, $options);
+		return $this->request($url, 'GET', null, $headers, $options);
 	}
 
 	/**
@@ -166,7 +167,7 @@ class RollingCurl
 	 */
 	public function post($url, $postData = null, $headers = null, $options = null)
 	{
-		return $this->request($url, "POST", $postData, $headers, $options);
+		return $this->request($url, 'POST', $postData, $headers, $options);
 	}
 
 	/**
@@ -181,7 +182,7 @@ class RollingCurl
 	 */
 	public function put($url, $putData = null, $headers = null, $options = null)
 	{
-		return $this->request($url, "PUT", $putData, $headers, $options);
+		return $this->request($url, 'PUT', $putData, $headers, $options);
 	}
 
 	/**
@@ -195,7 +196,7 @@ class RollingCurl
 	 */
 	public function delete($url, $headers = null, $options = null)
 	{
-		return $this->request($url, "DELETE", null, $headers, $options);
+		return $this->request($url, 'DELETE', null, $headers, $options);
 	}
 
 	/**
@@ -274,6 +275,11 @@ class RollingCurl
 					$callback = $this->callback;
 					$callback($request, $this);
 				}
+				
+				// close curl and other cleaning - memory
+				curl_close($transfer['handle']);
+				unset($transfer['handler']);
+				unset($key);
 
 				// if something was requeued, this will get it running/update our loop check values
 				$status = curl_multi_exec($master, $active);
@@ -296,11 +302,11 @@ class RollingCurl
 					break;
 			}
 			if ($err) {
-				throw new \Exception("curl_multi_exec failed with error code ($status) const ($err)");
+				throw new \Exception('curl_multi_exec failed with error code (' . $status . ') const (' . $err . ')');
 			}
 
 			// Block until *something* happens to avoid burning CPU cycles for naught
-			while (0 == curl_multi_select($master, $selectTimeout) && $idleCallback) {
+			while (0 === curl_multi_select($master, $selectTimeout) && $idleCallback) {
 				$idleCallback($this);
 			}
 
@@ -386,7 +392,7 @@ class RollingCurl
 	public function setCallback($callback)
 	{
 		if (!is_callable($callback)) {
-			throw new \InvalidArgumentException("must pass in a callable instance");
+			throw new \InvalidArgumentException('must pass in a callable instance');
 		}
 		$this->callback = $callback;
 		return $this;
@@ -428,7 +434,7 @@ class RollingCurl
 	public function setHeaders($headers)
 	{
 		if (!is_array($headers)) {
-			throw new \InvalidArgumentException("headers must be an array");
+			throw new \InvalidArgumentException('headers must be an array');
 		}
 		$this->headers = $headers;
 		return $this;
@@ -450,7 +456,7 @@ class RollingCurl
 	public function setOptions($options)
 	{
 		if (!is_array($options)) {
-			throw new \InvalidArgumentException("options must be an array");
+			throw new \InvalidArgumentException('options must be an array');
 		}
 		$this->options = $options;
 		return $this;
@@ -466,7 +472,7 @@ class RollingCurl
 	public function addOptions($options)
 	{
 		if (!is_array($options)) {
-			throw new \InvalidArgumentException("options must be an array");
+			throw new \InvalidArgumentException('options must be an array');
 		}
 		$this->options = $options + $this->options;
 		return $this;
@@ -488,7 +494,7 @@ class RollingCurl
 	public function setMulticurlOptions($multicurlOptions)
 	{
 		if (!is_array($multicurlOptions)) {
-			throw new \InvalidArgumentException("multicurlOptions must be an array");
+			throw new \InvalidArgumentException('multicurlOptions must be an array');
 		}
 		$this->multicurlOptions = $multicurlOptions;
 		return $this;
@@ -504,7 +510,7 @@ class RollingCurl
 	public function addMulticurlOptions($multicurlOptions)
 	{
 		if (!is_array($multicurlOptions)) {
-			throw new \InvalidArgumentException("multicurlOptions must be an array");
+			throw new \InvalidArgumentException('multicurlOptions must be an array');
 		}
 		$this->multicurlOptions = $multicurlOptions + $this->multicurlOptions;
 		return $this;
@@ -532,7 +538,7 @@ class RollingCurl
 	public function setSimultaneousLimit($count)
 	{
 		if (!is_int($count) || $count < 2) {
-			throw new \InvalidArgumentException("setSimultaneousLimit count must be an int >= 2");
+			throw new \InvalidArgumentException('setSimultaneousLimit count must be an int >= 2');
 		}
 		$this->simultaneousLimit = $count;
 		return $this;
@@ -564,13 +570,17 @@ class RollingCurl
 	 */
 	private function getNextPendingRequests($limit = 1)
 	{
-		$requests = array();
-		while ($limit--) {
-			if (!isset($this->pendingRequests[$this->pendingRequestsPosition])) {
-				break;
+		$requests = [];
+		if ($limit <= 0) {
+			$requests = array_slice($this->pendingRequests, $this->pendingRequestsPosition);
+		} else {
+			while ($limit--) {
+				if (!isset($this->pendingRequests[$this->pendingRequestsPosition])) {
+					break;
+				}
+				$requests[] = $this->pendingRequests[$this->pendingRequestsPosition];
+				$this->pendingRequestsPosition++;
 			}
-			$requests[] = $this->pendingRequests[$this->pendingRequestsPosition];
-			$this->pendingRequestsPosition++;
 		}
 		return $requests;
 	}
@@ -639,7 +649,14 @@ class RollingCurl
 	 */
 	public function clearCompleted()
 	{
-		$this->completedRequests = array();
+		// free memory
+		// FOREACH - neasociativni pole
+		$i = 0;
+		while (true === isset($this->completedRequests[$i])) {
+			unset($this->completedRequests[$i]);
+			$i++;
+		}
+		$this->completedRequests = [];
 		gc_collect_cycles();
 		return $this;
 	}
