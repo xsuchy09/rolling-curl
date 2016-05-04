@@ -4,7 +4,7 @@
  * a consistent number of simultaneous connections
  *
  * @package RollingCurl
- * @version 3.1
+ * @version 3.1.1
  * @author Jeff Minard (http://jrm.cc/)
  * @author Josh Fraser (www.joshfraser.com)
  * @author Alexander Makarov (http://rmcreative.ru/)
