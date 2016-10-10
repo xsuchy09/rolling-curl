@@ -15,6 +15,9 @@
 
 namespace RollingCurl;
 
+use DateInterval;
+use DateTime;
+
 /**
  * Class that represent a single curl request
  */
@@ -70,11 +73,27 @@ class Request
 	 * @var int
 	 */
 	private $responseErrno;
+	
+	/**
+	 * @var DateTime
+	 */
+	private $start;
+	
+	/**
+	 * @var DateTime
+	 */
+	private $end;
+	
+	/**
+	 * @var int
+	 */
+	private $executionTime;
 
 	/**
 	 * @param string $url
 	 * @param string $method
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	function __construct($url, $method = 'GET')
 	{
@@ -86,7 +105,8 @@ class Request
 	 * You may wish to store some "extra" info with this request, you can put any of that here.
 	 *
 	 * @param mixed $extraInfo
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setExtraInfo($extraInfo)
 	{
@@ -104,7 +124,8 @@ class Request
 
 	/**
 	 * @param array $headers
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setHeaders($headers)
 	{
@@ -122,7 +143,8 @@ class Request
 
 	/**
 	 * @param string $method
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setMethod($method)
 	{
@@ -140,28 +162,22 @@ class Request
 
 	/**
 	 * @param array $options
-	 * @throws \InvalidArgumentException
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
-	public function setOptions($options)
+	public function setOptions(array $options)
 	{
-		if (!is_array($options)) {
-			throw new \InvalidArgumentException('options must be an array');
-		}
 		$this->options = $options;
 		return $this;
 	}
 
 	/**
 	 * @param array $options
-	 * @throws \InvalidArgumentException
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
-	public function addOptions($options)
+	public function addOptions(array $options)
 	{
-		if (!is_array($options)) {
-			throw new \InvalidArgumentException('options must be an array');
-		}
 		$this->options = $options + $this->options;
 		return $this;
 	}
@@ -176,7 +192,8 @@ class Request
 
 	/**
 	 * @param string $postData
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setPostData($postData)
 	{
@@ -194,7 +211,8 @@ class Request
 
 	/**
 	 * @param int $responseErrno
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setResponseErrno($responseErrno)
 	{
@@ -212,7 +230,8 @@ class Request
 
 	/**
 	 * @param string $responseError
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setResponseError($responseError)
 	{
@@ -230,7 +249,8 @@ class Request
 
 	/**
 	 * @param array $responseInfo
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setResponseInfo($responseInfo)
 	{
@@ -248,7 +268,8 @@ class Request
 
 	/**
 	 * @param string $responseText
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setResponseText($responseText)
 	{
@@ -266,7 +287,8 @@ class Request
 
 	/**
 	 * @param string $url
-	 * @return \RollingCurl\Request
+	 * 
+	 * @return Request
 	 */
 	public function setUrl($url)
 	{
@@ -282,4 +304,103 @@ class Request
 		return $this->url;
 	}
 
+	/**
+	 * Set start of execution of request.
+	 * 
+	 * @param DateTime $start
+	 * 
+	 * @return Request
+	 */
+	public function setStart(DateTime $start = null)
+	{
+		if ($start === null) {
+			$start = $this->getDateTimeWithMicroseconds();
+		}
+		$this->start = $start;
+		return $this;
+	}
+	
+	/**
+	 * Get start of exection of request.
+	 * 
+	 * @return DateTime
+	 */
+	public function getStart()
+	{
+		return $this->start;
+	}
+
+	/**
+	 * Set end of execution of request.
+	 * 
+	 * @param DateTime $end
+	 * 
+	 * @return Request
+	 */
+	public function setEnd(DateTime $end = null)
+	{
+		if ($end === null) {
+			$end = $this->getDateTimeWithMicroseconds();
+		}
+		$this->end = $end;
+		return $this;
+	}
+
+	/**
+	 * Get end of execution of request.
+	 * 
+	 * @return DateTime
+	 */
+	public function getEnd()
+	{
+		return $this->end;
+	}
+	
+	/**
+	 * Get time of execution of request (in microseconds).
+	 * 
+	 * @return float
+	 */
+	public function getExecutionTimeMicroseconds()
+	{
+		if ($this->start === null || $this->end === null) {
+			return null;
+		}
+		$secondsDiff = $this->end->getTimestamp() - $this->start->getTimestamp();
+		$microsecondsDiff = (int)((int)$secondsDiff * 1000000 + ((int)$this->end->format('u') - (int)$this->start->format('u')));
+		$this->executionTime = (float)((int)$microsecondsDiff / 1000000);
+		return (int)$microsecondsDiff;
+	}
+	
+	/**
+	 * Get time of execution of request (in seconds).
+	 * 
+	 * @return float
+	 */
+	public function getExecutionTime()
+	{
+		if ($this->executionTime === null) {
+			$this->getExecutionTimeMicroseconds();
+		}
+		return (float)$this->executionTime;
+	}
+	
+	
+	/**
+	 * Get DateTime object with microseconds.
+	 * 
+	 * @param string $dateTimeWithMicroseconds
+	 * 
+	 * @return DateTime
+	 */
+	private function getDateTimeWithMicroseconds($dateTimeWithMicroseconds = null)
+	{
+		if ($dateTimeWithMicroseconds === null) {
+			$microseconds = round(microtime(true) - time(), 6) * 1000000;
+			$dateAndTime = date('Y-m-d H:i:s');
+			
+			$dateTimeWithMicroseconds = $dateAndTime . '.' . $microseconds;
+		}
+		return DateTime::createFromFormat('Y-m-d H:i:s.u', $dateTimeWithMicroseconds);
+	}
 }

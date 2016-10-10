@@ -23,7 +23,7 @@ $rollingCurl
 			} else {
 				$title = '[No Title Tag Found]';
 			}
-			echo 'Fetch complete for (' . $request->getUrl() . ') ' . $title . PHP_EOL;
+			echo 'Fetch complete for (' . $request->getUrl() . ') ' . $title . ' in ' . round($request->getExecutionTime(), 3) . ' seconds' . PHP_EOL;
 			
 			// Clear list of completed requests and prune pending request queue to avoid memory growth
 			$rollingCurl->clearCompleted();
