@@ -15,7 +15,6 @@
 
 namespace RollingCurl;
 
-use DateInterval;
 use DateTime;
 
 /**
@@ -27,67 +26,67 @@ class Request
 	/**
 	 * @var string
 	 */
-	private $url;
+	protected $url;
 
 	/**
 	 * @var string
 	 */
-	private $method;
+	protected $method;
 
 	/**
 	 * @var string
 	 */
-	private $postData;
+	protected $postData;
 
 	/**
 	 * @var array
 	 */
-	private $headers;
+	protected $headers;
 
 	/**
 	 * @var array
 	 */
-	private $options = [];
+	protected $options = [];
 
 	/**
 	 * @var mixed
 	 */
-	private $extraInfo;
+	protected $extraInfo;
 
 	/**
 	 * @var string
 	 */
-	private $responseText;
+	protected $responseText;
 
 	/**
 	 * @var array
 	 */
-	private $responseInfo;
+	protected $responseInfo;
 
 	/**
 	 * @var string
 	 */
-	private $responseError;
+	protected $responseError;
 
 	/**
 	 * @var int
 	 */
-	private $responseErrno;
+	protected $responseErrno;
 	
 	/**
 	 * @var DateTime
 	 */
-	private $start;
+	protected $start;
 	
 	/**
 	 * @var DateTime
 	 */
-	private $end;
+	protected $end;
 	
 	/**
 	 * @var int
 	 */
-	private $executionTime;
+	protected $executionTime;
 
 	/**
 	 * @param string $url
@@ -95,7 +94,7 @@ class Request
 	 * 
 	 * @return Request
 	 */
-	function __construct($url, $method = 'GET')
+	public function __construct($url, $method = 'GET')
 	{
 		$this->setUrl($url);
 		$this->setMethod($method);
@@ -393,7 +392,7 @@ class Request
 	 * 
 	 * @return DateTime
 	 */
-	private function getDateTimeWithMicroseconds($dateTimeWithMicroseconds = null)
+	protected function getDateTimeWithMicroseconds($dateTimeWithMicroseconds = null)
 	{
 		if ($dateTimeWithMicroseconds === null) {
 			$microseconds = round(microtime(true) - time(), 6) * 1000000;

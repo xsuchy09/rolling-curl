@@ -257,11 +257,11 @@ class RollingCurl
 				// get the request object back and put the curl response into it
 				$key = (int)$transfer['handle'];
 				$request = $this->activeRequests[$key];
-				$request->setResponseText(curl_multi_getcontent($transfer['handle']));
-				$request->setResponseErrno(curl_errno($transfer['handle']));
-				$request->setResponseError(curl_error($transfer['handle']));
-				$request->setResponseInfo(curl_getinfo($transfer['handle']));
-				$request->setEnd();
+				$request->setResponseText(curl_multi_getcontent($transfer['handle']))
+						->setResponseErrno(curl_errno($transfer['handle']))
+						->setResponseError(curl_error($transfer['handle']))
+						->setResponseInfo(curl_getinfo($transfer['handle']))
+						->setEnd();
 
 				// remove the request from the list of active requests
 				unset($this->activeRequests[$key]);

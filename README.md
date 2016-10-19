@@ -170,6 +170,8 @@ $rollingCurl->execute();
 - Every request has start, end (DateTime with microseconds) - so we know executionTime of everyRequest - @see Request::getExecutionTime and Request::getExecutionTimeMicroseconds
 - RollingCurl::wasIdleCallbackCalled added - idleCallback may not be called it requests are handled too much quickly - you can check if idleCallback was called or not.
 - Some comments and methods parameters definition.
+### 3.1.3
+- Request - private vars anf function are protected now
 
 More examples can be found in the examples/ directory.
 

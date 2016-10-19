@@ -1,7 +1,7 @@
 {
     "name": "xsuchy09/rolling-curl",
     "description": "Rolling-Curl: A non-blocking, non-dos multi-curl library for PHP",
-	"version": "3.1.2",
+	"version": "3.1.3",
     "type": "library",
     "keywords": ["multi", "curl", "parallel", "requests", "asynchronous", "http"],
     "homepage": "https://github.com/xsuchy09/rolling-curl",
