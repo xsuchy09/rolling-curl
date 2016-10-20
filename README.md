@@ -168,7 +168,7 @@ $rollingCurl->execute();
 ## Changes
 
 ### 3.1.3:
-- Request - private vars and function are protected now
+- Request - private vars and functions are protected now
 
 ### 3.1.2:
 - Every request has start, end (DateTime with microseconds) - so we know executionTime of everyRequest - @see Request::getExecutionTime and Request::getExecutionTimeMicroseconds
