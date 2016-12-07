@@ -166,6 +166,8 @@ $rollingCurl->execute();
 ```
 
 ## Changes
+### 3.1.4:
+- Timeouts - default timeouts set to 5s for CURLOPT_CONNECTTIMEOUT and 20s for CURLOPT_TIMEOUT.
 
 ### 3.1.3:
 - Request - private vars and functions are protected now
