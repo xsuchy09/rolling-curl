@@ -384,6 +384,22 @@ class Request
 		return (float)$this->executionTime;
 	}
 	
+	/**
+	 * Get actual time of execution of request (in seconds).
+	 * 
+	 * @return float
+	 */
+	public function getActualExecutionTime()
+	{
+		if ($this->start === null || $this->end !== null) { // not started or is ended
+			return null;
+		}
+		$now = $this->getDateTimeWithMicroseconds();
+		$secondsDiff = $now->getTimeStamp() - $this->start->getTimestamp();
+		$microsecondsDiff = (int)((int)$secondsDiff * 1000000 + ((int)$now->format('u') - (int)$this->start->format('u')));
+		return (float)((int)$microsecondsDiff / 1000000);
+	}
+	
 	
 	/**
 	 * Get DateTime object with microseconds.
