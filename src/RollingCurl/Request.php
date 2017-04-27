@@ -411,9 +411,11 @@ class Request
 	protected function getDateTimeWithMicroseconds($dateTimeWithMicroseconds = null)
 	{
 		if ($dateTimeWithMicroseconds === null) {
-			$microseconds = round(microtime(true) - time(), 6) * 1000000;
-			$dateAndTime = date('Y-m-d H:i:s');
-			
+			$microtime = microtime(true);
+			$seconds = explode('.', (string)$microtime);
+			$microseconds = str_pad($seconds[1], 6, '0', STR_PAD_RIGHT);
+			$dateAndTime = date('Y-m-d H:i:s', (int)$seconds[0]);
+
 			$dateTimeWithMicroseconds = $dateAndTime . '.' . $microseconds;
 		}
 		return DateTime::createFromFormat('Y-m-d H:i:s.u', $dateTimeWithMicroseconds);
